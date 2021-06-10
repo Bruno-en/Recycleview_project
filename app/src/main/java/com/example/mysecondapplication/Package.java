@@ -19,6 +19,10 @@ public class Package {
         text3 = mpostal_code + " " + mcity;
     }
 
+    public void changeText1(String text) {
+        text3 = text;
+    }
+
     public String getPackage_number() {
         return mpackage_number;
     }

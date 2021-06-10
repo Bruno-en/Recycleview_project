@@ -44,6 +44,20 @@
             android:padding="2dp"
             android:text="Line3" />
 
+        <Button
+            android:id="@+id/dialog_button"
+            android:layout_width="45dp"
+            android:layout_height="30dp"
+            android:layout_alignBottom="@id/textView3"
+            android:layout_alignParentEnd="true"
+            android:layout_alignEnd="@id/textView1"
+
+            android:layout_marginEnd="8dp"
+            android:padding="1dp"
+            android:text="X"
+            android:textAlignment="center"
+            android:textSize="10sp" />
+
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>
