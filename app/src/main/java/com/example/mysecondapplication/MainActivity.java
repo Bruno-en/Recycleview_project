@@ -1,10 +1,19 @@
 package com.example.mysecondapplication;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -14,6 +23,9 @@ public class MainActivity extends AppCompatActivity  {
     private RecyclerView mrecyclerView;
     private PackageAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
+    public FloatingActionButton floatingAddButton;
+
+    private static final int SECOND_ACTIVITY_REQUEST_CODE = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +45,7 @@ public class MainActivity extends AppCompatActivity  {
         mrecyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         adapter = new PackageAdapter(mExampleList);
+        floatingAddButton = findViewById(R.id.fabAdd);
 
         mrecyclerView.setLayoutManager(layoutManager);
         mrecyclerView.setAdapter(adapter);
@@ -49,10 +62,41 @@ public class MainActivity extends AppCompatActivity  {
 
             }
         });
+        floatingAddButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSomeActivityForResult();
+            }
+        });
+
     }
 
     public void removeItem(int position) {
         mExampleList.remove(position);
         adapter.notifyItemRemoved(position);
+    }
+    public void insertItem(Package p,int position) {
+        mExampleList.add( position, p );
+        adapter.notifyItemInserted(position);
+
+    }
+    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // There are no request codes
+                        Intent data = result.getData();
+                        Package newPackage =  data.getExtras().getParcelable("dodanaPaczka");
+                        insertItem(newPackage, 0);
+                        mrecyclerView.scrollToPosition(0);
+                    }
+                }
+            });
+
+    public void openSomeActivityForResult() {
+        Intent intent = new Intent(this, AddPackageActivity.class);
+        someActivityResultLauncher.launch(intent);
     }
 }
